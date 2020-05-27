@@ -1244,7 +1244,11 @@ rocksdb::Env* CreateAwsEnv(const std::string& dbpath ,
   assert(coptions.credentials.HasValid().ok());
 
   coptions.keep_local_sst_files = FLAGS_keep_local_sst_files;
-  coptions.TEST_Initialize("dbbench.", "", region);
+  if (FLAGS_db.empty()) {
+    coptions.TEST_Initialize("dbbench.", "db-bench", region);
+  } else {
+    coptions.TEST_Initialize("dbbench.", FLAGS_db, region);
+  }
   rocksdb::CloudEnv* s;
   rocksdb::Status st = rocksdb::AwsEnv::NewAwsEnv(rocksdb::Env::Default(),
                                                   coptions,
